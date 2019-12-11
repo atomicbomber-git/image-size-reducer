@@ -43,6 +43,35 @@
                 </div>
             </form>
         </div>
+
+        <img src="" alt="The processed image">
     </div>
 </div>
+@endsection
+
+@section('script')
+    <script>
+        window.onload = function () {
+            document.querySelector("form")
+                .onsubmit = function (e) {
+                    e.preventDefault()
+
+                    let formData = new FormData()
+                    let imageInput = document.querySelector('input#image')
+
+                    formData.append(
+                        imageInput.attributes.getNamedItem("name").value,
+                        imageInput.files[0]
+                    )
+
+                    axios.post("{{ route('image-size-reducement.store') }}", formData)
+                       .then(response => {
+                            console.log(response)
+                       })
+                       .catch(error => {
+                           console.log(error)
+                       })
+                }
+        }
+    </script>
 @endsection

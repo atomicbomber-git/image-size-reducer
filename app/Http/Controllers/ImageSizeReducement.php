@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Spatie\ImageOptimizer\OptimizerChain;
+use Spatie\ImageOptimizer\Optimizers\Jpegoptim;
 
 class ImageSizeReducement extends Controller
 {
@@ -26,12 +28,15 @@ class ImageSizeReducement extends Controller
             "image" => "required|file|mimes:png,jpg,jpeg,svg"
         ]);
 
-        dump($request->file("image"));
+        $this->optimizer
+            ->addOptimizer(new Jpegoptim([
+                '--strip-all',
+                '--size=200k',
+            ]))
+            ->optimize(
+                $request->file("image")->path()
+            );
 
-        // $optimizedImage = $this->optimizer->optimize(
-        //     $request->file("image")
-        // );
-
-        // return response()->file($optimizedImage);
+        return response()->file($request->file("image") );
     }
 }
